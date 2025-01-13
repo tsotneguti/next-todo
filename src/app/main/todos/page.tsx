@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getTodos } from "../../actions";
+import { deleteTodo, getTodos } from "../../actions";
 
 export default function Page() {
   const [items, setItems] = useState([]);
@@ -19,6 +19,11 @@ export default function Page() {
     }
   };
 
+  async function handleDelete(id: string) {
+    await deleteTodo(id);
+    await loadTodos();
+  }
+
   return (
     <div>
       <div>
@@ -27,7 +32,10 @@ export default function Page() {
         </Link>
       </div>
       {items.map((item: any) => (
-        <div key={item.id}>{item.description}</div>
+        <div key={item.id}>
+          {item.description}{" "}
+          <button onClick={() => handleDelete(item.id)}>X</button>
+        </div>
       ))}
     </div>
   );

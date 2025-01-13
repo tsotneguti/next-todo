@@ -1,20 +1,32 @@
 "use server";
 
 import { db } from "@vercel/postgres";
-import { redirect } from "next/navigation";
 
 const client = await db.connect();
 
 export async function addTodo(ps: any, formData: any) {
+  await delay(2000);
+
   try {
     await client.sql`
             insert into todos (description)
             values (${formData.get("description")})
         `;
+    return { data: {}, error: "" };
   } catch (error) {
-    return "error";
+    return { data: null, error: "შეცდომა" };
   }
-  redirect("/main/todos");
+}
+
+export async function deleteTodo(id: string) {
+  try {
+    await client.sql`
+            delete from todos where id = ${id}
+        `;
+    return { data: {}, error: "" };
+  } catch (error) {
+    return { data: null, error: "შეცდომა" };
+  }
 }
 
 export async function getTodos() {
@@ -28,3 +40,6 @@ export async function getTodos() {
     return "error";
   }
 }
+
+const delay = (time: number) =>
+  new Promise((resolve, reject) => setTimeout(resolve, time));
