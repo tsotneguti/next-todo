@@ -32,9 +32,15 @@ export default function Page() {
         </Link>
       </div>
       {items.map((item: any) => (
-        <div key={item.id}>
+        <div key={item.id} className={"p-2"}>
           {item.description}{" "}
           <button onClick={() => handleDelete(item.id)}>X</button>
+          <Link
+            href={`/main/todos/${item.id}/edit`}
+            className={"custom-btn p-1"}
+          >
+            edit
+          </Link>
         </div>
       ))}
     </div>

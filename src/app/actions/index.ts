@@ -5,12 +5,24 @@ import { db } from "@vercel/postgres";
 const client = await db.connect();
 
 export async function addTodo(ps: any, formData: any) {
-  await delay(2000);
+  await delay(500);
 
   try {
     await client.sql`
             insert into todos (description)
             values (${formData.get("description")})
+        `;
+    return { data: {}, error: "" };
+  } catch (error) {
+    return { data: null, error: "შეცდომა" };
+  }
+}
+
+export async function editTodo(ps: any, formData: any) {
+  try {
+    await client.sql`
+            update todos set description=${formData.get("description")}
+            where id = ${formData.get("id")}
         `;
     return { data: {}, error: "" };
   } catch (error) {
@@ -40,6 +52,17 @@ export async function getTodos() {
     return "error";
   }
 }
+export async function getTodo(id: string) {
+  try {
+    const res = await client.sql`
+            select *
+            from todos where id=${id}
+        `;
+    return res.rows?.[0];
+  } catch (error) {
+    return "error";
+  }
+}
 
 const delay = (time: number) =>
-  new Promise((resolve, reject) => setTimeout(resolve, time));
+  new Promise((resolve) => setTimeout(resolve, time));
